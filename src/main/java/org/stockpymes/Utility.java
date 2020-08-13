@@ -1,7 +1,6 @@
 package org.stockpymes;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -15,15 +14,6 @@ import com.google.gson.JsonObject;
  * @author Alex P. Vega
  */
 class Utility {
-	
-	public static String readAll(Reader rd) throws IOException {
-	    StringBuilder sb = new StringBuilder();
-	    int cp;
-	    while ((cp = rd.read()) != -1) {
-	      sb.append((char) cp);
-	    }
-	    return sb.toString();
-	 }
 	
 	public static String getValJson(JsonObject js, String propName) {
 		return js.get(propName).getAsString();

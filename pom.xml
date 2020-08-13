@@ -5,6 +5,13 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>StockPymesAPI</name>
   <description>An basic API to consume my own API REST.</description>
+  <packaging>jar</packaging>
+  <properties>
+  	<java.version>11</java.version>
+  	<maven.compiler.source>11</maven.compiler.source>
+   <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+  
   <developers>
   	<developer>
   		<id>1</id>
@@ -17,6 +24,60 @@
   		<url>https://alexvegadev-portfolio.herokuapp.com/</url>
   	</developer>
   </developers>
+  
+  <build>
+  	<finalName>jstockpymes</finalName>
+  	<plugins>
+  		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-dependency-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <id>copy-dependencies</id>
+		            <phase>prepare-package</phase>
+		            <goals>
+		                <goal>copy-dependencies</goal>
+		            </goals>
+		            <configuration>
+		                <outputDirectory>
+		                    ${project.build.directory}/libs
+		                </outputDirectory>
+		            </configuration>
+		        </execution>
+		    </executions>
+		</plugin>
+		<plugin>
+	        <artifactId>maven-assembly-plugin</artifactId>
+	        <version>2.1</version>
+	        <configuration>
+	            <descriptorRefs>
+	                <descriptorRef>jar-with-dependencies</descriptorRef>
+	            </descriptorRefs>                 
+	        </configuration>
+	        <executions>
+	            <execution>
+	                <id>make-assembly</id>
+	                <phase>package</phase>
+	                <goals>
+	                    <goal>attached</goal>
+	                </goals>
+	            </execution>
+	        </executions>
+	    </plugin>
+		<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jar-plugin</artifactId>
+	        <version>3.2.0</version>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>test-jar</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	     </plugin>
+  	</plugins>
+  </build>
   
   <dependencies>
   	<dependency>
