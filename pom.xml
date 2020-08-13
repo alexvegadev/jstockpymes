@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.stockpymes</groupId>
+  <artifactId>jstockpymes</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>StockPymesAPI</name>
+  <description>An basic API to consume my own API REST.</description>
+  <developers>
+  	<developer>
+  		<id>1</id>
+  		<email>alexvegadev@gmail.com</email>
+  		<name>Alex Gabriel Peiretti Vega</name>
+  		<roles>
+  			<role>Owner</role>
+  			<role>Developer</role>
+  		</roles>
+  		<url>https://alexvegadev-portfolio.herokuapp.com/</url>
+  	</developer>
+  </developers>
+  
+  <dependencies>
+  	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.8.6</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+	<dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	    <version>4.5.12</version>
+	</dependency>
+  </dependencies>
+</project>
