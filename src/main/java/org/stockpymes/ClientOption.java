@@ -35,6 +35,11 @@ public class ClientOption {
 		return null;
 	}
 	
+	public boolean createClient(Client client) {
+		
+		return false;
+	}
+	
 	public StockPymes getAttachedAPI() {
 		return _stockAPI;
 	}

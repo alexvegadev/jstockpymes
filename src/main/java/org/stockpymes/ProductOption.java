@@ -3,6 +3,7 @@ package org.stockpymes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stockpymes.models.OrderFactory;
 import org.stockpymes.models.Product;
 
 import com.google.gson.JsonParser;
@@ -13,9 +14,15 @@ import com.google.gson.JsonParser;
 public class ProductOption {
 	
 	private final StockPymes _stockAPI;
+	private OrderFactory<Product> _orderFactory;
 	
 	protected ProductOption(StockPymes stockAPI) {
 		this._stockAPI = stockAPI;
+		this._orderFactory = OrderFactory.newOrder((Product a, Product b) -> {return (int)(a.getPrice() - b.getPrice());});
+	}
+	
+	public OrderFactory<Product> order(){
+		return _orderFactory;
 	}
 	
 	public List<Product> getProducts(){
@@ -40,6 +47,19 @@ public class ProductOption {
 		}
         
 		return null;
+	}
+	
+	public boolean createProduct(Product prod) {
+		if(prod != null) {
+			String response = Utility.requestPost(_stockAPI, "products", prod);
+			return response != null;
+		}
+		return false;
+	}
+	
+	public boolean deleteProduct(long id) {
+		var response = Utility.requestDelete(_stockAPI, "products/"+id);
+		return response != null;
 	}
 	
 	public StockPymes getAttachedAPI() {
