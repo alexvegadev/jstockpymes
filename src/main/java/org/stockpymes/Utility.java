@@ -8,19 +8,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.stockpymes.models.StatusResponse;
+
 import com.google.gson.JsonObject;
 
 /**
  * @author Alex P. Vega
  */
-class Utility {
+public class Utility {
+	
+	protected static final ResponseHandler<String> DEFINED_RESPONSE_HANDLER = (response) ->{
+		int status = response.getStatusLine().getStatusCode();
+		if(status >= 200 && status < 300) {
+			HttpEntity entity = response.getEntity();
+	        return entity != null ? EntityUtils.toString(entity) : null;
+		}
+		return null;
+	};
+	
+	protected static final ResponseHandler<StatusResponse> STATUS_RESPONSE_HANDLER = (response) ->{
+		int status = response.getStatusLine().getStatusCode();
+		if(status >= 200 && status < 300) {
+			HttpEntity entity = response.getEntity();
+	        return entity != null ? StatusResponse.OK : StatusResponse.FAIL;
+		}
+		return StatusResponse.FAIL;
+	};
 	
 	public static String getValJson(JsonObject js, String propName) {
 		return js.get(propName).getAsString();
@@ -83,6 +106,29 @@ class Utility {
 		return result;
 	}
 	
+	public static <T> String requestPut(StockPymes stockAPI, String misc, T objectSender) {
+		HttpPut put = new HttpPut(setRequest(stockAPI.apiRequestURL(), misc));
+		put.setHeader("Accept", "application/json");
+		put.setHeader("Content-type", "application/json");
+		String json = createJson(objectSender.getClass(), objectSender).toString();
+		String result = null;
+		try {
+			StringEntity stringEntity = new StringEntity(json);
+			put.setEntity(stringEntity);
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		try (var response = stockAPI.getHttpClient().execute(put)){
+            result = EntityUtils.toString(response.getEntity());
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static Map<String, String> mapMethods(Class<?> c){
 		var methds = new HashMap<String, String>();
 		for(var cs : c.getMethods()) {
@@ -103,7 +149,8 @@ class Utility {
 		for(var mn : mappedMethods.entrySet()) {
 			try {
 				String val = c.getMethod(mn.getValue()).invoke(prod).toString();
-				params.add(new BasicNameValuePair(mn.getKey(), val));
+				String k = mn.getKey();
+				params.add(new BasicNameValuePair(k, val));
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
 			}

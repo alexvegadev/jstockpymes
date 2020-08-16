@@ -26,7 +26,7 @@ public class OrderFactory<T> {
 		this._handler = comp;
 	}
 	
-	public Comparator<?> getHandler() {
+	public Comparator<T> getHandler() {
 		return _handler;
 	}
 	

@@ -3,6 +3,7 @@ package org.stockpymes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stockpymes.interfaces.ICrud;
 import org.stockpymes.models.OrderFactory;
 import org.stockpymes.models.Product;
 
@@ -11,7 +12,7 @@ import com.google.gson.JsonParser;
 /**
  * @author Alex P. Vega
  */
-public class ProductOption {
+public class ProductOption implements ICrud<Product> {
 	
 	private final StockPymes _stockAPI;
 	private OrderFactory<Product> _orderFactory;
@@ -21,11 +22,26 @@ public class ProductOption {
 		this._orderFactory = OrderFactory.newOrder((Product a, Product b) -> {return (int)(a.getPrice() - b.getPrice());});
 	}
 	
+	@Override
 	public OrderFactory<Product> order(){
 		return _orderFactory;
 	}
 	
-	public List<Product> getProducts(){
+	public StockPymes getAttachedAPI() {
+		return _stockAPI;
+	}
+
+	@Override
+	public boolean create(Product val) {
+		if(val != null) {
+			String response = Utility.requestPost(_stockAPI, "products", val);
+			return response != null;
+		}
+		return false;
+	}
+
+	@Override
+	public List<Product> getAll() {
 		final String result = Utility.requestGet(_stockAPI, "products");
 		if(result != null) {
 			var prods = new ArrayList<Product>();
@@ -48,21 +64,34 @@ public class ProductOption {
         
 		return null;
 	}
-	
-	public boolean createProduct(Product prod) {
-		if(prod != null) {
-			String response = Utility.requestPost(_stockAPI, "products", prod);
-			return response != null;
+
+	@Override
+	public Product findById(long id) {
+		final String result = Utility.requestGet(_stockAPI, "products/"+id);
+		Product product = null;
+		if(result != null) {
+	        var jsobj = JsonParser.parseString(result).getAsJsonObject();
+	        var name = Utility.getValJson(jsobj, "name");
+	        var category = Utility.getValJson(jsobj, "category");
+	        var image = Utility.getValJson(jsobj, "image");
+	        var price = Double.valueOf(Utility.getValJson(jsobj, "price"));
+	        var priceToSell = Double.valueOf(Utility.getValJson(jsobj, "priceToSell"));
+	        var pricePerUnit = Double.valueOf(Utility.getValJson(jsobj, "pricePerUnit"));
+	        var quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
+	        product = new Product(id, name, category, image, price, priceToSell, pricePerUnit, quantity);
 		}
-		return false;
+		return product;
 	}
-	
-	public boolean deleteProduct(long id) {
+
+	@Override
+	public boolean delete(long id) {
 		var response = Utility.requestDelete(_stockAPI, "products/"+id);
 		return response != null;
 	}
-	
-	public StockPymes getAttachedAPI() {
-		return _stockAPI;
+
+	@Override
+	public boolean update(Product val) {
+		var response = Utility.requestPut(_stockAPI, "products", val);
+		return response != null;
 	}
 }

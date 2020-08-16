@@ -1,5 +1,7 @@
 package org.stockpymes.models;
 
+import org.stockpymes.Utility;
+
 /**
  * @author Alex P. Vega
  */
@@ -12,6 +14,7 @@ public class Product {
 	private Double priceToSell;
 	private Double pricePerUnit;
 	private Integer quantity;
+	private boolean json;
 	
 	public Product() {
 		// TODO Auto-generated constructor stub
@@ -92,5 +95,21 @@ public class Product {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+	
+	/**
+	 * Switch or sets json variable to return or not an json using toString() method.
+	 */
+	public void json() {
+		this.json = !this.json;
+	}
+	
+	@Override
+	public String toString() {
+		if (json) {
+			var mapped = Utility.createJson(getClass(), this);
+			return mapped != null ? mapped.toString() : super.toString();
+		}
+		return super.toString();
 	}
 }
