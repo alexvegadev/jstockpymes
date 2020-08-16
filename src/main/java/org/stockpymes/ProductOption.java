@@ -19,7 +19,7 @@ public class ProductOption implements ICrud<Product> {
 	
 	protected ProductOption(StockPymes stockAPI) {
 		this._stockAPI = stockAPI;
-		this._orderFactory = OrderFactory.newOrder((Product a, Product b) -> {return (int)(a.getPrice() - b.getPrice());});
+		this._orderFactory = OrderFactory.newOrder(null);
 	}
 	
 	@Override
@@ -58,7 +58,9 @@ public class ProductOption implements ICrud<Product> {
 	        	var quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
 	        	prods.add( new Product(id, name, category, image, price, priceToSell, pricePerUnit, quantity));
 	        }
-	        
+	        if(order().getHandler() != null) {
+	        	prods.sort(order().getHandler());
+	        }
 	        return prods;
 		}
         

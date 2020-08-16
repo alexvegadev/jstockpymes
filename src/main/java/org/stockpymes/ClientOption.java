@@ -18,7 +18,7 @@ public class ClientOption implements ICrud<Client> {
 	
 	protected ClientOption(StockPymes stockAPI) {
 		this._stockAPI = stockAPI;
-		this._orderFactory = OrderFactory.newOrder((Client a, Client b) -> (int)(a.getId() - b.getId()));//ordered by default per id
+		this._orderFactory = OrderFactory.newOrder(null);//ordered by default per id
 	}
 	
 	@Override
@@ -43,7 +43,9 @@ public class ClientOption implements ICrud<Client> {
 	        	var lastName = Utility.getValJson(jsobj, "lastName");
 	        	clients.add( new Client(id, firstName, lastName));
 	        }
-	        clients.sort(order().getHandler());
+	        if(order().getHandler() != null) {
+	        	clients.sort(order().getHandler());
+	        }
 	        return clients;
 		}
         

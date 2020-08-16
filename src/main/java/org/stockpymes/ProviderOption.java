@@ -15,10 +15,11 @@ import com.google.gson.JsonParser;
 public class ProviderOption implements ICrud<Provider> {
 	
 	private final StockPymes _stockAPI;
-	private OrderFactory<Provider> _orderFactory;
+	private final OrderFactory<Provider> _orderFactory;
 	
 	protected ProviderOption(StockPymes stockAPI) {
 		this._stockAPI = stockAPI;
+		this._orderFactory = OrderFactory.newOrder(null);
 	}
 	
 	@Override
