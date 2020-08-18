@@ -3,19 +3,19 @@ package org.stockpymes;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Alex P. Vega
  */
 public class StockPymes implements Closeable {
 	private final String _apiRequestURL;
-	private final CloseableHttpClient httpClient;
-	
+	private final OkHttpClient httpClient;
+	 
 	private StockPymes(String apiString) {
 		this._apiRequestURL = apiString;
-		httpClient = HttpClients.createDefault();
+		httpClient = new OkHttpClient();
 	}
 	
 	
@@ -31,7 +31,7 @@ public class StockPymes implements Closeable {
 		return new StockPymes(apiRequestURL);
 	}
 	
-	protected CloseableHttpClient getHttpClient() {
+	protected OkHttpClient getHttpClient() {
 		return httpClient;
 	}
 	
@@ -42,6 +42,6 @@ public class StockPymes implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		httpClient.close();
+		
 	}
 }
