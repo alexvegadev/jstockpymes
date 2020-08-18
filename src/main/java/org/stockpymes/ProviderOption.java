@@ -7,6 +7,8 @@ import org.stockpymes.interfaces.ICrud;
 import org.stockpymes.models.OrderFactory;
 import org.stockpymes.models.Provider;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
@@ -35,12 +37,12 @@ public class ProviderOption implements ICrud<Provider> {
 	public List<Provider> getAll() {
 		final String result = Utility.requestGet(_stockAPI, "providers");
 		if(result != null) {
-			var prods = new ArrayList<Provider>();
-			var json = JsonParser.parseString(result);
-	        for(var prod : json.getAsJsonArray()) {
-	        	var jsobj = prod.getAsJsonObject();
-	        	var id = Long.valueOf(Utility.getValJson(jsobj, "id"));
-	        	var name = Utility.getValJson(jsobj, "providerName");
+			List<Provider> prods = new ArrayList<>();
+			JsonElement json = JsonParser.parseString(result);
+	        for(JsonElement prod : json.getAsJsonArray()) {
+	        	JsonObject jsobj = prod.getAsJsonObject();
+	        	Long id = Long.valueOf(Utility.getValJson(jsobj, "id"));
+	        	String name = Utility.getValJson(jsobj, "providerName");
 	        	prods.add( new Provider(id, name));
 	        }
 	        if(order().getHandler() != null) {
@@ -57,8 +59,8 @@ public class ProviderOption implements ICrud<Provider> {
 		final String result = Utility.requestGet(_stockAPI, "providers/"+id);
 		Provider provider = null;
 		if(result != null) {
-	        var jsobj = JsonParser.parseString(result).getAsJsonObject();
-	        var name = Utility.getValJson(jsobj, "providerName");
+	        JsonObject jsobj = JsonParser.parseString(result).getAsJsonObject();
+	        String name = Utility.getValJson(jsobj, "providerName");
 	        provider = new Provider(id, name);
 		}
 		return provider;
@@ -66,13 +68,13 @@ public class ProviderOption implements ICrud<Provider> {
 
 	@Override
 	public boolean delete(long id) {
-		var response = Utility.requestDelete(_stockAPI, "providers/"+id);
+		String response = Utility.requestDelete(_stockAPI, "providers/"+id);
 		return response != null;
 	}
 
 	@Override
 	public boolean update(Provider val) {
-		var response = Utility.requestPut(_stockAPI, "providers", val);
+		String response = Utility.requestPut(_stockAPI, "providers", val);
 		return response != null;
 	}
 

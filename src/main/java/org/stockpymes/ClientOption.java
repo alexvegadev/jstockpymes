@@ -7,6 +7,8 @@ import org.stockpymes.interfaces.ICrud;
 import org.stockpymes.models.Client;
 import org.stockpymes.models.OrderFactory;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
@@ -34,13 +36,13 @@ public class ClientOption implements ICrud<Client> {
 	public List<Client> getAll() {
 		final String result = Utility.requestGet(_stockAPI, "products");
 		if(result != null) {
-			var clients = new ArrayList<Client>();
-			var json = JsonParser.parseString(result);
-	        for(var prod : json.getAsJsonArray()) {
-	        	var jsobj = prod.getAsJsonObject();
-	        	var id = Long.valueOf(Utility.getValJson(jsobj, "id"));
-	        	var firstName = Utility.getValJson(jsobj, "firstName");
-	        	var lastName = Utility.getValJson(jsobj, "lastName");
+			List<Client> clients = new ArrayList<>();
+			JsonElement json = JsonParser.parseString(result);
+	        for(JsonElement prod : json.getAsJsonArray()) {
+	        	JsonObject jsobj = prod.getAsJsonObject();
+	        	Long id = Long.valueOf(Utility.getValJson(jsobj, "id"));
+	        	String firstName = Utility.getValJson(jsobj, "firstName");
+	        	String lastName = Utility.getValJson(jsobj, "lastName");
 	        	clients.add( new Client(id, firstName, lastName));
 	        }
 	        if(order().getHandler() != null) {
@@ -57,11 +59,11 @@ public class ClientOption implements ICrud<Client> {
 		final String result = Utility.requestGet(_stockAPI, "products/"+id);
 		if(result != null) {
 			Client client = null;
-			var json = JsonParser.parseString(result);
-	        for(var prod : json.getAsJsonArray()) {
-	        	var jsobj = prod.getAsJsonObject();
-	        	var firstName = Utility.getValJson(jsobj, "firstName");
-	        	var lastName = Utility.getValJson(jsobj, "lastName");
+			JsonElement json = JsonParser.parseString(result);
+	        for(JsonElement prod : json.getAsJsonArray()) {
+	        	JsonObject jsobj = prod.getAsJsonObject();
+	        	String firstName = Utility.getValJson(jsobj, "firstName");
+	        	String lastName = Utility.getValJson(jsobj, "lastName");
 	        	client = new Client(id, firstName, lastName);
 	        }
 	        return client;
@@ -71,13 +73,13 @@ public class ClientOption implements ICrud<Client> {
 
 	@Override
 	public boolean delete(long id) {
-		var response = Utility.requestDelete(_stockAPI, "clients/"+id);
+		String response = Utility.requestDelete(_stockAPI, "clients/"+id);
 		return response != null;
 	}
 
 	@Override
 	public boolean update(Client val) {
-		var response = Utility.requestPut(_stockAPI, "clients", val);
+		String response = Utility.requestPut(_stockAPI, "clients", val);
 		return response != null;
 	}
 	

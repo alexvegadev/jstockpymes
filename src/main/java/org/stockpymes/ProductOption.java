@@ -7,6 +7,8 @@ import org.stockpymes.interfaces.ICrud;
 import org.stockpymes.models.OrderFactory;
 import org.stockpymes.models.Product;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
@@ -44,18 +46,18 @@ public class ProductOption implements ICrud<Product> {
 	public List<Product> getAll() {
 		final String result = Utility.requestGet(_stockAPI, "products");
 		if(result != null) {
-			var prods = new ArrayList<Product>();
-			var json = JsonParser.parseString(result);
-	        for(var prod : json.getAsJsonArray()) {
-	        	var jsobj = prod.getAsJsonObject();
-	        	var id = Long.valueOf(Utility.getValJson(jsobj, "id"));
-	        	var name = Utility.getValJson(jsobj, "name");
-	        	var category = Utility.getValJson(jsobj, "category");
-	        	var image = Utility.getValJson(jsobj, "image");
-	        	var price = Double.valueOf(Utility.getValJson(jsobj, "price"));
-	        	var priceToSell = Double.valueOf(Utility.getValJson(jsobj, "priceToSell"));
-	        	var pricePerUnit = Double.valueOf(Utility.getValJson(jsobj, "pricePerUnit"));
-	        	var quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
+			List<Product> prods = new ArrayList<>();
+			JsonElement json = JsonParser.parseString(result);
+	        for(JsonElement prod : json.getAsJsonArray()) {
+	        	JsonObject jsobj = prod.getAsJsonObject();
+	        	Long id = Long.valueOf(Utility.getValJson(jsobj, "id"));
+	        	String name = Utility.getValJson(jsobj, "name");
+	        	String category = Utility.getValJson(jsobj, "category");
+	        	String image = Utility.getValJson(jsobj, "image");
+	        	Double price = Double.valueOf(Utility.getValJson(jsobj, "price"));
+	        	Double priceToSell = Double.valueOf(Utility.getValJson(jsobj, "priceToSell"));
+	        	Double pricePerUnit = Double.valueOf(Utility.getValJson(jsobj, "pricePerUnit"));
+	        	Integer quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
 	        	prods.add( new Product(id, name, category, image, price, priceToSell, pricePerUnit, quantity));
 	        }
 	        if(order().getHandler() != null) {
@@ -72,14 +74,14 @@ public class ProductOption implements ICrud<Product> {
 		final String result = Utility.requestGet(_stockAPI, "products/"+id);
 		Product product = null;
 		if(result != null) {
-	        var jsobj = JsonParser.parseString(result).getAsJsonObject();
-	        var name = Utility.getValJson(jsobj, "name");
-	        var category = Utility.getValJson(jsobj, "category");
-	        var image = Utility.getValJson(jsobj, "image");
-	        var price = Double.valueOf(Utility.getValJson(jsobj, "price"));
-	        var priceToSell = Double.valueOf(Utility.getValJson(jsobj, "priceToSell"));
-	        var pricePerUnit = Double.valueOf(Utility.getValJson(jsobj, "pricePerUnit"));
-	        var quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
+	        JsonObject jsobj = JsonParser.parseString(result).getAsJsonObject();
+	        String name = Utility.getValJson(jsobj, "name");
+	        String category = Utility.getValJson(jsobj, "category");
+	        String image = Utility.getValJson(jsobj, "image");
+	        Double price = Double.valueOf(Utility.getValJson(jsobj, "price"));
+	        Double priceToSell = Double.valueOf(Utility.getValJson(jsobj, "priceToSell"));
+	        Double pricePerUnit = Double.valueOf(Utility.getValJson(jsobj, "pricePerUnit"));
+	        Integer quantity = Integer.valueOf(Utility.getValJson(jsobj, "quantity"));
 	        product = new Product(id, name, category, image, price, priceToSell, pricePerUnit, quantity);
 		}
 		return product;
@@ -87,13 +89,13 @@ public class ProductOption implements ICrud<Product> {
 
 	@Override
 	public boolean delete(long id) {
-		var response = Utility.requestDelete(_stockAPI, "products/"+id);
+		String response = Utility.requestDelete(_stockAPI, "products/"+id);
 		return response != null;
 	}
 
 	@Override
 	public boolean update(Product val) {
-		var response = Utility.requestPut(_stockAPI, "products", val);
+		String response = Utility.requestPut(_stockAPI, "products", val);
 		return response != null;
 	}
 }

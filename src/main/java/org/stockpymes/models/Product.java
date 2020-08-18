@@ -2,6 +2,8 @@ package org.stockpymes.models;
 
 import org.stockpymes.Utility;
 
+import com.google.gson.JsonObject;
+
 /**
  * @author Alex P. Vega
  */
@@ -107,7 +109,7 @@ public class Product {
 	@Override
 	public String toString() {
 		if (json) {
-			var mapped = Utility.createJson(getClass(), this);
+			JsonObject mapped = Utility.createJson(getClass(), this);
 			return mapped != null ? mapped.toString() : super.toString();
 		}
 		return super.toString();

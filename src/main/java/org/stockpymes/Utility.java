@@ -2,8 +2,10 @@ package org.stockpymes;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
 
@@ -75,12 +77,12 @@ public class Utility {
 	}
 
 	public static Map<String, String> mapMethods(Class<?> c) {
-		var methds = new HashMap<String, String>();
-		for (var cs : c.getMethods()) {
-			var name = cs.getName();
+		HashMap<String, String> methds = new HashMap<>();
+		for (Method cs : c.getMethods()) {
+			String name = cs.getName();
 			if (name.startsWith("get") && !name.equals("getClass")) {
 				name = name.substring(3, name.length());
-				var firstChar = "" + name.charAt(0);
+				String firstChar = "" + name.charAt(0);
 				name = firstChar.toLowerCase() + name.substring(1, name.length());
 				methds.put(name, cs.getName());
 			}
@@ -92,8 +94,8 @@ public class Utility {
 
 	public static <T> JsonObject createJson(Class<?> c, T prod) {
 		JsonObject json = new JsonObject();
-		var mappedMethods = Utility.mapMethods(c);
-		for (var mn : mappedMethods.entrySet()) {
+		Map<String, String> mappedMethods = Utility.mapMethods(c);
+		for (Entry<String, String> mn : mappedMethods.entrySet()) {
 			try {
 				String val = c.getMethod(mn.getValue()).invoke(prod).toString();
 				json.addProperty(mn.getKey(), val);
